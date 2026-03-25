@@ -47,7 +47,7 @@ Before the main specification, always start with data preparation:
 
 - Publication-ready tables (LaTeX via `modelsummary` or `fixest::etable`)
 - Publication-ready figures (ggplot2 with consistent theme)
-- All outputs saved to `Tables/` and `Figures/`
+- All outputs saved to `paper/tables/` and `paper/figures/`
 - `results_summary.md` with key findings, effect sizes, and interpretation notes for the Writer
 
 ## Script Standards
@@ -72,7 +72,7 @@ When invoked with `--dual` or `--replicate`:
 2. Match variable names, output structure, and table format
 3. Save to language-specific directory (`scripts/R/`, `scripts/python/`, `scripts/stata/`)
 4. Produce `Output/cross_language_comparison.csv` with estimates side-by-side
-5. Use `domain-profile.md` Quality Tolerance Thresholds for pass/fail
+5. Use `.claude/references/domain-profile.md` Quality Tolerance Thresholds for pass/fail
 
 If results diverge: investigate whether the difference is numerical precision (acceptable) or a bug (fix it). Common sources of cross-language divergence:
 - Default optimization algorithms (BFGS vs L-BFGS)
@@ -82,10 +82,16 @@ If results diverge: investigate whether the difference is numerical precision (a
 
 ## Output Location
 
-- Scripts: `scripts/R/` (or `scripts/stata/`, `scripts/python/`)
-- Tables: `Tables/`
-- Figures: `Figures/`
-- Logs: `Output/`
+Read CLAUDE.md for the project's **Output Organization** setting:
+
+- **by-script (default):** Outputs go to subfolders named after the script that generates them:
+  - `paper/figures/main_regression/figure1.pdf`
+  - `paper/tables/main_regression/table1.tex`
+- **by-purpose:** Outputs go to subfolders named by purpose:
+  - `paper/figures/estimation/coefplot_main.pdf`
+  - `paper/tables/robustness/alt_controls.tex`
+
+Scripts: `scripts/R/` (or `scripts/stata/`, `scripts/python/`)
 
 ## What You Do NOT Do
 

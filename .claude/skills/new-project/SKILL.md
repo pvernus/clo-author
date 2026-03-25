@@ -1,9 +1,8 @@
 ---
 name: new-project
 description: Full research pipeline from idea to paper. Orchestrates all phases — discovery, strategy, analysis, writing, peer review, and submission. Use when starting a new research project from scratch.
-disable-model-invocation: true
 argument-hint: "[research topic or 'interactive' for guided start]"
-allowed-tools: ["Read", "Grep", "Glob", "Write", "Edit", "Bash", "Task", "WebSearch", "WebFetch"]
+allowed-tools: Read,Grep,Glob,Write,Edit,Bash,Task,WebSearch,WebFetch
 ---
 
 # New Project
@@ -45,12 +44,22 @@ Phase 5: Submission (depends on Phase 4, score >= 95)
 
 ## Workflow
 
+### Step 0: Enter Plan Mode
+
+Before any work begins:
+1. **Enter plan mode** — use `EnterPlanMode`
+2. **Create the project folder structure** — `data/raw/`, `data/cleaned/`, `scripts/R/`, `paper/sections/`, `paper/figures/`, `paper/tables/`, etc.
+3. **Draft a high-level plan** — what phases are needed, estimated scope
+4. **Save to disk** — `quality_reports/plans/YYYY-MM-DD_new-project.md`
+5. **Present to user** — wait for approval before proceeding
+6. **Exit plan mode** — only after approval
+
 ### Step 1: Discovery Phase
 
 1. **If `interactive` or no research spec exists:**
    Run `/discover interview` to produce:
    - Research specification (`quality_reports/research_spec_*.md`)
-   - Domain profile (`.claude/rules/domain-profile.md`) — if still template
+   - Domain profile (`.claude/references/domain-profile.md`) — if still template
 
 2. **Run `/discover lit`** with the research topic:
    - Librarian collects literature

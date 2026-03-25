@@ -4,6 +4,133 @@ All notable changes to the Clo-Author are documented here.
 
 ---
 
+## [3.1.1] — 2026-03-24
+
+### Output Organization
+- Added `Output Organization` setting to CLAUDE.md (by-script or by-purpose)
+- Default is **by-script**: outputs go to subfolders named after the generating script (e.g., `paper/figures/main_regression/figure1.pdf`)
+- Coder agent reads this setting and follows accordingly
+
+### Bug Fixes
+- Fixed Paper/ → paper/ rename on case-insensitive macOS filesystem (git index mismatch)
+- Fixed all stale uppercase paths across 10 files (agents, skills, rules, CLAUDE.md)
+- Fixed broken domain-profile path in /new-project
+- Added plan mode (Step 0) to /new-project
+- Removed stale upstream remote to Pedro's repo
+
+---
+
+## [3.1.0] — 2026-03-23
+
+### Skill Detail Restoration — v1.0 Depth Returns to v3.0
+
+The v2.0→v3.0 consolidation accidentally stripped practical detail from 6 skills. This release restores all 22 lost items while keeping the v3.0 structure.
+
+**`/discover`:**
+- Restored proximity scoring (1-5 scale) for literature papers
+- Restored citation chains as explicit search vector (forward + backward)
+- Restored feasibility grades (A/B/C/D) for datasets
+- Restored data rejection table format
+- Restored 5-point explorer-critic data critique (measurement validity, sample selection, external validity, identification compatibility, known issues)
+- Restored `% UNVERIFIED` citation marking convention
+
+**`/strategize`:**
+- Restored interactive PAP interview (6-question guided flow)
+- Restored platform-specific PAP templates (AEA RCT Registry, OSF, EGAP)
+- Restored observational study PAP adaptation protocol
+- Restored optional strategist-critic review after PAP creation
+- Restored `[ASSUMED]` placeholder safety flags with pre-registration checklist
+
+**`/analyze`:**
+- Restored R script skeleton template (6-section structure)
+- Restored `results_summary.md` as mandatory artifact (handoff to writer)
+- Restored full 12-category code review checklist (explicit categories 1-12)
+- Restored saveRDS serialization guidance
+- Restored Scott Cunningham replication tolerance thresholds for `--dual` mode
+
+**`/review`:**
+- Restored 4-phase econometrics protocol (claim → validity → inference → polish)
+- Restored early stopping rule (CRITICAL Phase 2 issues → focus there)
+- Restored severity calibration examples (9 examples with Major/Minor ratings)
+- Restored Verifier pass/fail definition (paper, code, replication package)
+- Restored "design-opinionated, package-flexible" principle
+
+**`/write`:**
+- Restored 7-item context gathering checklist
+- Restored quality self-check before presenting (7 items)
+- Restored TBD/VERIFY/PLACEHOLDER flagging system
+- Restored LaTeX conventions (`\citet` vs `\citep`, booktabs, notation protocol)
+
+**`/talk`:**
+- Restored "figures over tables; tables in backup" design principle
+- Restored 5-category review detail with full descriptions
+- Restored audience calibration principle
+
+### Referee Pet Peeves Expansion
+- **27 critical pet peeves** (was 12) — added Oster bounds, leave-one-out, power obsession, balance tables, ML variable selection, first-stage F, Bonferroni, and more
+- **24 constructive pet peeves** (was 12) — added event study appreciation, null result honesty, institutional detail, code availability, brevity rewards, contradictory findings engagement, and more
+- More variety = less predictable referees = more realistic simulation
+
+---
+
+## [3.0.0] — 2026-03-20
+
+### Scope Expansion: Empirical Social Science
+- clo-author now targets all empirical social science fields: economics, finance, marketing, management, accounting, public policy
+- Updated meta-governance to reflect this scope (no longer claims biology/physics/CS generality)
+- Institution updated from Emory to UAB
+
+### Peer Review Simulation — Complete Redesign
+- **New `editor` agent** — desk reviews papers before sending to referees, verifies novelty claims via WebSearch, selects referee dispositions based on journal culture, makes independent editorial decisions (not score averaging)
+- **Referee dispositions** — 6 intellectual priors (Structuralist, Credibility, Measurement, Policy, Theory, Skeptic) assigned by the editor based on journal culture
+- **Referee pet peeves** — each referee gets 1 critical and 1 constructive pet peeve, creating realistic variation across reviews
+- **Journal-driven referee selection** — new `Referee pool` field in journal profiles weights which dispositions the editor draws from (e.g., Econometrica skews Structuralist/Theory, QJE skews Credibility/Policy)
+- **"What would change my mind"** — every major referee comment must include specific evidence or analysis that would resolve the concern
+- **Desk reject** — editor can reject without sending to referees (wrong fit, no contribution, already published)
+- **FATAL/ADDRESSABLE/TASTE classification** — editorial decisions classify each concern, producing MUST/SHOULD/MAY action items
+- **R&R memory** — `--r2` flag reloads prior referee reports; referees check whether each concern was addressed (Resolved/Partially/Not addressed)
+- **Round escalation** — Round 2 allows Major Revisions if new issues surface; Round 3 is Accept/Minor/Reject only; max 3 rounds
+- **Hostile stress test** — `--stress [journal]` assigns adversarial dispositions, doubles critical pet peeves, pre-submission battle testing
+- **Literature verification** — editor uses WebSearch during desk review to verify novelty claims against published work
+
+### Journal Profiles Expansion
+- Added 15 new A* journal profiles across 4 fields:
+  - **Finance:** JF, JFE, RFS, JFQA
+  - **Accounting:** JAR, JAE, TAR, CAR
+  - **Marketing:** JMR, Marketing Science, JCR
+  - **Management:** Management Science, SMJ, ASQ
+- All profiles include `Referee pool` disposition weights calibrated to each journal's review culture
+- Journal profiles moved from rules to `.claude/references/` — loaded on demand, zero per-session overhead
+
+### Context Reduction: 66% Less Per-Session Overhead
+- **Before:** ~3,518 lines of rules loaded every session
+- **After:** ~1,198 lines loaded per session
+- Deleted `archive/` directory (22 duplicate rule files, ~1,769 lines)
+- Trimmed `meta-governance.md` from 252 to 20 lines
+- Moved `journal-profiles.md` to on-demand reference (299 lines saved per session)
+- Merged `tables.md` and `figures.md` into path-scoped `content-standards.md`
+
+### Content Standards Improvements
+- Added figure standards: PDF vector output, colorblind-friendly palettes, grayscale independence (shape + linetype redundancy), figure width guidance
+- Restored `threeparttable` requirement for tables (lost in prior merge)
+- Consolidated all content rules in one path-scoped file
+- Added 5 table type templates: descriptive statistics, regression results, multi-outcome panels, balance tables, robustness
+
+### Folder Structure Reorganization
+- Figures, tables, talks, and Quarto presentations now live inside `Paper/` (self-contained paper directory)
+- Added `Data/raw/` and `Data/cleaned/` directories
+- Deleted `Slides/` (legacy from lecture workflow)
+- Quarto RevealJS presentation support added (`/talk create [format] --quarto`)
+
+### Other Changes
+- Replaced `[LEARN]` tags with Claude Code's built-in auto-memory system
+- Added `[YOUR FIELD]` placeholder to CLAUDE.md and starter prompt
+- Agent prompts made field-neutral — read field from `.claude/references/domain-profile.md` (defaults to economics)
+- Deleted archived agents (16 files) and archived skills (20+ files)
+- Guide and documentation fully updated for v3.0
+
+---
+
 ## [2.0.3] — 2026-03-07
 
 ### Working Paper Format Rule

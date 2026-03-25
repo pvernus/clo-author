@@ -1,9 +1,8 @@
 ---
 name: tools
 description: Utility commands — commit, compile, validate-bib, journal, context-status, deploy, learn. Replaces individual utility skills.
-disable-model-invocation: true
-argument-hint: "[subcommand: commit | compile | validate-bib | journal | context | deploy | learn] [args]"
-allowed-tools: ["Read", "Grep", "Glob", "Write", "Edit", "Bash", "Task"]
+argument-hint: "[subcommand: commit | compile | validate-bib | journal | context | deploy | learn | upgrade] [args]"
+allowed-tools: Read,Grep,Glob,Write,Edit,Bash,Task
 ---
 
 # Tools
@@ -52,16 +51,55 @@ Show current context status and session health.
 Check context usage, whether auto-compact is approaching, what state will be preserved.
 
 ### `/tools deploy` — Deploy Guide Site
-Render Quarto guide site and sync to GitHub Pages.
+Render Quarto guide site and publish to GitHub Pages.
 ```bash
-cd guide && quarto render
+cd guide && quarto publish gh-pages --no-browser
 ```
-Then commit docs/ changes and push.
 
 ### `/tools learn` — Extract Learnings
-Extract reusable knowledge from the current session into MEMORY.md.
-Look for non-obvious discoveries, workarounds, multi-step workflows.
-Follow the two-tier system: generic → MEMORY.md, machine-specific → .claude/state/personal-memory.md.
+Extract reusable knowledge from the current session. Auto-memory handles corrections automatically; this is for multi-step workflows worth turning into a full skill.
+
+### `/tools upgrade` — Upgrade Clo-Author Infrastructure
+Upgrade an existing project to the latest clo-author architecture.
+
+**What it does:**
+1. Clone the latest clo-author release into a temp directory
+2. Save the user's filled-in domain-profile.md and any custom journal profiles
+3. Delete the old `.claude/` directory
+4. Copy the new `.claude/` in
+5. Restore the user's domain-profile.md and custom journal profiles
+6. Optionally copy new `templates/`
+7. Report what changed
+
+**Workflow:**
+```
+Step 1: DOWNLOAD
+  - Clone latest clo-author into /tmp/clo-author-upgrade
+  - Or: gh release download --repo hugosantanna/clo-author
+
+Step 2: PRESERVE USER CUSTOMIZATIONS
+  - Save .claude/references/domain-profile.md if filled in (not just placeholders)
+  - Save any custom journal profiles the user added to journal-profiles.md
+  - Save .claude/settings.json (user's permissions and hooks)
+  - Save .claude/settings.local.json if it exists
+
+Step 3: REPLACE
+  - Delete old .claude/ entirely
+  - Copy new .claude/ from the downloaded release
+  - Restore saved customizations from Step 2
+
+Step 4: DO NOT TOUCH
+  - paper/, scripts/, data/, explorations/, quality_reports/
+  - CLAUDE.md, Bibliography_base.bib, README.md, .gitignore
+  - Any other user content
+
+Step 5: REPORT
+  - List what was updated (new agents, skills, rules)
+  - List what was preserved (domain profile, settings, custom profiles)
+  - Clean up temp directory
+```
+
+**No git merge. No upstream remote. No conflicts.** Just delete and replace `.claude/`.
 
 ---
 
@@ -69,3 +107,4 @@ Follow the two-tier system: generic → MEMORY.md, machine-specific → .claude/
 - **Each subcommand is lightweight.** No multi-agent orchestration needed.
 - **Compile always uses 3-pass.** Ensures references and citations resolve.
 - **validate-bib catches drift.** Run before commits to catch broken citations.
+- **Upgrade preserves content.** Infrastructure changes, your paper doesn't.
